@@ -2,7 +2,6 @@ import axios from 'axios'
 
 async function getGroupMembers(){
   const result = await axios.get("./assets/data.json").then(res=>res.data);
-
 	/*jsondaki verileri result'a aktardıktan sonra group bilgisine göre gruplamak için
 	* dataları reduce ile döndük.
 	*/
@@ -10,7 +9,7 @@ async function getGroupMembers(){
 				/*reduce' un döneceği newData değeri içerisinde destructuring ile aldığımız verilerden group bilgisi
 				 var mı  diye kontrol ediyoruz. Eğer yoksa bu değeri reduce ile döneceğimiz objeye pushluyoruz.
 				 */
-        var temp = newData.find(o => o.group === group);
+        var temp = newData.find(newData => newData.group === group);
         if (!temp) 
 					newData.push(temp = { group, student: [],assistant });
 				/*Buraya destructuring ile gelen veri her işlem sonunda bir sonraki veriye geçerek devam eder
@@ -29,7 +28,7 @@ async function getGroupMembers(){
 				// gelen veriler bitene kadar buradaki döngü devam eder.
         return newData;
     }, []);
-		console.log(data);
+
 		return data;
 }
 
@@ -38,9 +37,10 @@ async function getFilterGroup(value){
 	//getGroupMembers() function'ını çağırıp içerisinden dönen gruplanmış veriyi kullanarak filtreleme işlemi yapıldı.
 	let result = await getGroupMembers().then(data=>data);
 	if(value)
-		console.log(result.filter(x=>x.group==value))
+		return result.filter(groupData=>groupData.group==value);
 }
 
-getGroupMembers(); //Bu function'ı çağırmadan da tüm gruplanmış verileri getFilterGroup() ile console.log() 'a yazdırabiliriz.
-
-getFilterGroup("Orchid");
+let groupMembers = await getGroupMembers(); 
+console.log("groupMembers : ",groupMembers);
+let filteredGroupData = await getFilterGroup("Orchid");
+console.log("filteredGroupData : ",filteredGroupData);
